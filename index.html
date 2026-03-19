@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Портфолио</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/portfolio-data.js" defer></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <noscript>
+    <div class="noscript-banner">
+      Для просмотра интерактивной структуры портфолио включите JavaScript.
+    </div>
+  </noscript>
+
+  <div class="page-shell">
+    <aside class="sidebar">
+      <a class="nav-logo" href="#top" aria-label="Наверх">
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
+
+      <nav class="course-nav" id="course-nav" aria-label="Навигация по курсам"></nav>
+
+      <div class="sidebar-note" id="sidebar-note"></div>
+    </aside>
+
+    <main class="content" id="top">
+      <header class="hero">
+        <div class="hero-meta" id="hero-meta"></div>
+
+        <div class="hero-layout">
+          <div class="hero-copy" id="hero-copy"></div>
+          <aside class="archive-card" id="archive-card"></aside>
+        </div>
+      </header>
+
+      <section class="portfolio-section">
+        <div class="section-title">
+          <p class="card-label">Каталог PDF</p>
+          <h2>Работы по курсам и семестрам</h2>
+          <p>
+            Архив выстроен по учебным этапам: от фундаментальных дисциплин и первых лабораторных
+            до проектных исследований, архитектурных решений и итоговой практики.
+          </p>
+        </div>
+
+        <div class="portfolio-root" id="portfolio-root"></div>
+      </section>
+
+      <section class="projects-section" id="course-projects">
+        <div class="section-title">
+          <p class="card-label">Курсовые</p>
+          <h2>Три проектные вехи</h2>
+          <p>
+            Отдельный раздел для крупных учебных работ, в которых уже собираются исследование,
+            архитектура, проектная логика и самостоятельное решение задачи в законченную систему.
+          </p>
+        </div>
+
+        <div class="project-grid" id="course-projects-root"></div>
+      </section>
+
+      <section class="contacts-card" id="contacts">
+        <p class="card-label">Контакты</p>
+        <h2 id="contacts-title"></h2>
+        <p id="contacts-description"></p>
+        <ul class="contact-list" id="contacts-list"></ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
