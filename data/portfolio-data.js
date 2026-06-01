@@ -47,8 +47,8 @@ const COURSE_PROJECTS = [
     focus:
       "В центре внимания — сборка электрических схем, наблюдение параметров цепи и оформление экспериментальных результатов.",
     type: "pdf",
-    file: "works/course-projects/Курсовая работа. 'ИСПОЛЬЗОВАНИЕ СИМУЛЯТОРА ЭЛЕКТРИЧЕСКИХ ЦЕПЕЙ ДЛЯ ПРОВЕДЕНИЯ ФИЗИЧЕСКОГО ЭКСПЕРИМЕНТА' Салимов Д.Р. 2 группа, 2 подгруппа.pdf",
-    source: "data/course-projects/Курсовая работа. 'ИСПОЛЬЗОВАНИЕ СИМУЛЯТОРА ЭЛЕКТРИЧЕСКИХ ЦЕПЕЙ ДЛЯ ПРОВЕДЕНИЯ ФИЗИЧЕСКОГО ЭКСПЕРИМЕНТА' Салимов Д.Р. 2 группа, 2 подгруппа.docx",
+    file: "works/course-projects/coursework-circuit-simulator.pdf",
+    source: "data/course-projects/coursework-circuit-simulator.docx",
     sourceLabel: "Исходный DOCX"
   },
   {
