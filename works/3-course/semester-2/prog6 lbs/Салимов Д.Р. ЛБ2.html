@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Салимов Д.Р. ЛБ2</title>
+  <style>
+    body { margin: 0; padding: 24px; color: #1f1c19; background: #fffaf2; font-family: Verdana, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; }
+    h1, h2, h3, h4, h5 { font-family: Georgia, serif; line-height: 1.12; }
+    .cell { margin: 0 0 18px; padding: 16px; border: 2px solid rgba(31, 28, 25, 0.18); border-radius: 14px; background: #fffdf8; }
+    pre { overflow: auto; white-space: pre-wrap; word-break: break-word; }
+    .code { background: #1f1c19; color: #fff7ed; padding: 14px; border-radius: 10px; }
+    .output { background: #f3e7da; padding: 14px; border-radius: 10px; }
+    .output-image { max-width: 100%; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Салимов Д.Р. ЛБ2</h1>
+    <section class="cell"><pre class="code"><code>import pandas as pd</code></pre></section><section class="cell"><pre class="code"><code>titanic = pd.read_csv(&quot;train.csv&quot;)</code></pre></section><section class="cell"><pre class="code"><code>titanic</code></pre>
+<pre class="output">     PassengerId  Survived  Pclass  \
+0              1         0       3   
+1              2         1       1   
+2              3         1       3   
+3              4         1       1   
+4              5         0       3   
+..           ...       ...     ...   
+886          887         0       2   
+887          888         1       1   
+888          889         0       3   
+889          890         1       1   
+890          891         0       3   
+
+                                                  Name     Sex   Age  SibSp  \
+0                              Braund, Mr. Owen Harris    male  22.0      1   
+1    Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                               Heikkinen, Miss. Laina  female  26.0      0   
+3         Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                             Allen, Mr. William Henry    male  35.0      0   
+..                                                 ...     ...   ...    ...   
+886                              Montvila, Rev. Juozas    male  27.0      0   
+887                       Graham, Miss. Margaret Edith  female  19.0      0   
+888           Johnston, Miss. Catherine Helen &quot;Carrie&quot;  female   NaN      1   
+889                              Behr, Mr. Karl Howell    male  26.0      0   
+890                                Dooley, Mr. Patrick    male  32.0      0   
+
+     Parch            Ticket     Fare Cabin Embarked  
+0        0         A/5 21171   7.2500   NaN        S  
+1        0          PC 17599  71.2833   C85        C  
+2        0  STON/O2. 3101282   7.9250   NaN        S  
+3        0            113803  53.1000  C123        S  
+4        0            373450   8.0500   NaN        S  
+..     ...               ...      ...   ...      ...  
+886      0            211536  13.0000   NaN        S  
+887      0            112053  30.0000   B42        S  
+888      2        W./C. 6607  23.4500   NaN        S  
+889      0            111369  30.0000  C148        C  
+890      0            370376   7.7500   NaN        Q  
+
+[891 rows x 12 columns]</pre></section><section class="cell"><h2>Задание 1</h2></section><section class="cell"><pre class="code"><code>print(f&quot;Мужчин: {titanic[&#x27;Sex&#x27;].value_counts()[&#x27;male&#x27;]}, Женщин: {titanic[&#x27;Sex&#x27;].value_counts()[&#x27;female&#x27;]}&quot;)</code></pre>
+<pre class="output">Мужчин: 577, Женщин: 314
+</pre></section><section class="cell"><h2>Задание 2</h2></section><section class="cell"><pre class="code"><code>print(f&quot;Cherbourg: {titanic[&#x27;Embarked&#x27;].value_counts()[&#x27;C&#x27;]}, Queenstown: {titanic[&#x27;Embarked&#x27;].value_counts()[&#x27;Q&#x27;]}, Southampton: {titanic[&#x27;Embarked&#x27;].value_counts()[&#x27;S&#x27;]}&quot;)</code></pre>
+<pre class="output">Cherbourg: 168, Queenstown: 77, Southampton: 644
+</pre></section><section class="cell"><h2>Задание 3</h2></section><section class="cell"><pre class="code"><code>all_people = titanic.iloc[-1][&#x27;PassengerId&#x27;]</code></pre></section><section class="cell"><pre class="code"><code>print(f&#x27;{round(((titanic[&#x27;Survived&#x27;].value_counts()[0]) / all_people * 100), 2)} % погибло, Всего погибло: {(titanic[&#x27;Survived&#x27;].value_counts()[0])}&#x27;)</code></pre>
+<pre class="output">61.62 % погибло, Всего погибло: 549
+</pre></section><section class="cell"><h2>Задание 4</h2></section><section class="cell"><pre class="code"><code>print(f&#x27;{round((titanic[&quot;Pclass&quot;] == 1).sum() / all_people * 100, 2)} % в первом классе&#x27;)</code></pre>
+<pre class="output">24.24 % в первом классе
+</pre></section><section class="cell"><pre class="code"><code>print(f&#x27;{round((titanic[&quot;Pclass&quot;] == 2).sum() / all_people * 100, 2)} % во втором классе&#x27;)</code></pre>
+<pre class="output">20.65 % во втором классе
+</pre></section><section class="cell"><pre class="code"><code>print(f&#x27;{round((titanic[&quot;Pclass&quot;] == 3).sum() / all_people * 100, 2)} % в третьем классе&#x27;)</code></pre>
+<pre class="output">55.11 % в третьем классе
+</pre></section><section class="cell"><h2>Задание 5</h2></section><section class="cell"><pre class="code"><code>spouses_children = titanic[[&#x27;SibSp&#x27;, &#x27;Parch&#x27;]]</code></pre></section><section class="cell"><pre class="code"><code>spouses_children.corr(method=&#x27;pearson&#x27;)</code></pre>
+<pre class="output">          SibSp     Parch
+SibSp  1.000000  0.414838
+Parch  0.414838  1.000000</pre></section><section class="cell"><h2>Задание 6</h2></section><section class="cell"><pre class="code"><code>age_survived = titanic[[&#x27;Age&#x27;, &#x27;Survived&#x27;]]
+age_survived.corr(method=&#x27;pearson&#x27;)</code></pre>
+<pre class="output">               Age  Survived
+Age       1.000000 -0.077221
+Survived -0.077221  1.000000</pre></section><section class="cell"><p>Корреляция между возрастом и параметром Survived практически **нулевая**</p></section><section class="cell"><pre class="code"><code>titanic[&#x27;SexInt&#x27;] = titanic[&#x27;Sex&#x27;].map({&quot;male&quot;: 0, &quot;female&quot;: 1})
+
+sex_survived = titanic[[&#x27;SexInt&#x27;, &#x27;Survived&#x27;]]
+sex_survived.corr(method=&#x27;pearson&#x27;)</code></pre>
+<pre class="output">            SexInt  Survived
+SexInt    1.000000  0.543351
+Survived  0.543351  1.000000</pre></section><section class="cell"><p>Корреляция между полом и параметром Survived **положительная и равна примерно 0.54 по методу Пирсона**</p></section><section class="cell"><pre class="code"><code>pclass_survived = titanic[[&#x27;Pclass&#x27;, &#x27;Survived&#x27;]]
+pclass_survived.corr(method=&#x27;pearson&#x27;)</code></pre>
+<pre class="output">            Pclass  Survived
+Pclass    1.000000 -0.338481
+Survived -0.338481  1.000000</pre></section><section class="cell"><p>Корреляция между классом кабины и параметром Survived **отрицательна и равна примерно -0.33 по методу Пирсона**.</p>
+<p>Чем престижнее класс, тем более высок параметр Survived</p></section><section class="cell"><h2>Задание 7</h2></section><section class="cell"><pre class="code"><code>print(f&#x27;Средний возраст пассажиров: {round(titanic[&#x27;Age&#x27;].mean(),1)} лет&#x27;) 
+print(f&#x27;Медиана возраста: {titanic[&#x27;Age&#x27;].median()} лет&#x27;)
+print(f&#x27;Максимальный возраст: {titanic[&#x27;Age&#x27;].max()} лет&#x27;)
+print(f&#x27;Минимальный возраст: {titanic[&#x27;Age&#x27;].min()}, Приблизительно 5 месяцев&#x27;)</code></pre>
+<pre class="output">Средний возраст пассажиров: 29.7 лет
+Медиана возраста: 28.0 лет
+Максимальный возраст: 80.0 лет
+Минимальный возраст: 0.42, Приблизительно 5 месяцев
+</pre></section><section class="cell"><h2>Задание 8</h2></section><section class="cell"><pre class="code"><code>print(f&#x27;Средняя стоимость билета: {round(titanic[&#x27;Fare&#x27;].mean(),3)}&#x27;) 
+print(f&#x27;Медиана стоимости билета: {titanic[&#x27;Fare&#x27;].median()} долларов&#x27;)
+print(f&#x27;Максимальная цена билета: {titanic[&#x27;Fare&#x27;].max()} долларов&#x27;)
+print(f&#x27;Минимальная цена билета: {titanic[&#x27;Fare&#x27;].min()} долларов&#x27;)</code></pre>
+<pre class="output">Средняя стоимость билета: 32.204
+Медиана стоимости билета: 14.4542 долларов
+Максимальная цена билета: 512.3292 долларов
+Минимальная цена билета: 0.0 долларов
+</pre></section><section class="cell"><h2>Задание 9</h2></section><section class="cell"><pre class="code"><code>male_names = titanic.loc[titanic[&#x27;Sex&#x27;]==&#x27;male&#x27;, &#x27;Name&#x27;]
+
+
+def extract_first_name(full_name):
+    # разделяем по запятой, берем вторую часть, затем по точке, берем вторую часть
+    return full_name.split(&#x27;, &#x27;)[1].split(&#x27;. &#x27;)[1].split(&#x27; &#x27;)[0]
+
+male_first_names = male_names.apply(extract_first_name)
+
+most_common_male_name = male_first_names.mode()[0]
+print(f&#x27;Самое популярное мужское имя: {most_common_male_name}&#x27;)</code></pre>
+<pre class="output">Самое популярное мужское имя: William
+</pre></section><section class="cell"><h2>Задание 10</h2></section><section class="cell"><pre class="code"><code>male_names_above_15 = titanic.query(&quot;Sex == &#x27;male&#x27; and Age &gt; 15&quot;)[&#x27;Name&#x27;]
+female_names_above_15 = titanic.query(&quot;Sex == &#x27;female&#x27; and Age &gt; 15&quot;)[&#x27;Name&#x27;]
+
+def extract_first_name(full_name):
+    try:
+        name_part = full_name.split(&#x27;, &#x27;)[1].split(&#x27;. &#x27;)[1]
+        if &#x27;(&#x27; in name_part and &#x27;)&#x27; in name_part:
+            name_in_brackets = name_part.split(&#x27;(&#x27;)[1].split(&#x27;)&#x27;)[0]
+            return name_in_brackets.split(&#x27; &#x27;)[0]
+        return name_part.split(&#x27; &#x27;)[0]
+    except IndexError:
+        return None
+
+male_first_names_above_15 = male_names_above_15.apply(extract_first_name).dropna()
+female_first_names_above_15 = female_names_above_15.apply(extract_first_name).dropna()
+
+most_common_male = male_first_names_above_15.mode()[0]
+most_common_female = female_first_names_above_15.mode()[0]
+
+print(f&#x27;Самое популярное мужское имя (старше 15): {most_common_male}&#x27;)
+print(f&#x27;Самое популярное женское имя (старше 15): {most_common_female}&#x27;)</code></pre>
+<pre class="output">Самое популярное мужское имя (старше 15): William
+Самое популярное женское имя (старше 15): Anna
+</pre></section>
+  </main>
+</body>
+</html>

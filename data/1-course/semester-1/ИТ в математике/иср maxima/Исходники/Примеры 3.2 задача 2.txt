@@ -1,0 +1,11 @@
+sin(Pi)^2+cos(Pi)^2
+f(x)=sqrt(x)+abs(x-a)+b
+a = 10
+b = 12
+f(4) = 20
+------
+f(x)=(abs(x^a - b))/c
+a = 3
+b = 78
+c = 10
+f(2) = 7

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Портфолио</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="data/portfolio-works.js" defer></script>
   <script src="data/portfolio-data.js" defer></script>
   <script src="main.js" defer></script>
 </head>
@@ -24,8 +25,6 @@
       </a>
 
       <nav class="course-nav" id="course-nav" aria-label="Навигация по курсам"></nav>
-
-      <div class="sidebar-note" id="sidebar-note"></div>
     </aside>
 
     <main class="content" id="top">
@@ -40,7 +39,7 @@
 
       <section class="portfolio-section">
         <div class="section-title">
-          <p class="card-label">Каталог PDF</p>
+          <p class="card-label">Каталог работ</p>
           <h2>Работы по курсам и семестрам</h2>
           <p>
             Архив выстроен по учебным этапам: от фундаментальных дисциплин и первых лабораторных
@@ -54,14 +53,26 @@
       <section class="projects-section" id="course-projects">
         <div class="section-title">
           <p class="card-label">Курсовые</p>
-          <h2>Три проектные вехи</h2>
+          <h2>Три курсовые работы</h2>
           <p>
-            Отдельный раздел для крупных учебных работ, в которых уже собираются исследование,
-            архитектура, проектная логика и самостоятельное решение задачи в законченную систему.
+            Отдельный раздел для курсовых проектов: от физического эксперимента и статистического анализа
+            до моделирования фракталов.
           </p>
         </div>
 
         <div class="project-grid" id="course-projects-root"></div>
+      </section>
+
+      <section class="projects-section" id="practice">
+        <div class="section-title">
+          <p class="card-label">Практики</p>
+          <h2>Отчеты по практике</h2>
+          <p>
+            Отдельный раздел для отчетов по учебной, производственной и преддипломной практике.
+          </p>
+        </div>
+
+        <div class="project-grid" id="practice-reports-root"></div>
       </section>
 
       <section class="contacts-card" id="contacts">

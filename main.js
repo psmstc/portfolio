@@ -1,5 +1,6 @@
 const SERVICE_LINKS = [
   { href: "#course-projects", label: "Курсовые" },
+  { href: "#practice", label: "Практики" },
   { href: "#contacts", label: "Контакты" }
 ];
 
@@ -8,17 +9,24 @@ const WORD_FORMS = {
   courses: ["курс", "курса", "курсов"],
   semesters: ["семестр", "семестра", "семестров"],
   disciplines: ["дисциплина", "дисциплины", "дисциплин"],
-  courseProjects: ["курсовая", "курсовые", "курсовых"]
+  courseProjects: ["курсовая", "курсовые", "курсовых"],
+  practices: ["практика", "практики", "практик"]
 };
 
 const UI_TEXT = {
   courseLabel: "Курс",
   serviceLabel: "..",
-  openPdf: "Открыть PDF",
-  missingPdf: "PDF появится позже",
+  openWork: "Смотреть",
+  openLink: "Открыть ссылку",
+  downloadFile: "Скачать",
+  openStandalone: "Открыть отдельно",
+  downloadSource: "Скачать исходник",
+  closeViewer: "Закрыть",
+  missingFile: "Файл появится позже",
   showWorks: "Показать работы",
   hideWorks: "Скрыть работы",
-  emptyDiscipline: "PDF по этой дисциплине пока не добавлены."
+  emptyDiscipline: "Работы по этой дисциплине пока не добавлены.",
+  unsupportedPreview: "Этот файл нельзя показать внутри страницы, но его можно открыть отдельно."
 };
 
 function escapeHtml(value) {
@@ -28,6 +36,18 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function isExternalUrl(value) {
+  return /^(https?:)?\/\//i.test(value) || /^(mailto|tel):/i.test(value);
+}
+
+function toAssetUrl(value) {
+  if (!value || isExternalUrl(value)) {
+    return value || "";
+  }
+
+  return value.split("/").map(encodeURIComponent).join("/");
 }
 
 function pluralizeRu(count, forms) {
@@ -81,7 +101,8 @@ function getPortfolioCounts(data) {
       sumBy(course.semesters, (semester) => semester.disciplines.length)
     ),
     works: sumBy(data.courses, countWorksInCourse),
-    courseProjects: data.courseProjects.length
+    courseProjects: data.courseProjects.length,
+    practices: data.practiceReports.length
   };
 }
 
@@ -100,7 +121,8 @@ function getPortfolioStats(data) {
     createStat(counts.semesters, WORD_FORMS.semesters),
     createStat(counts.disciplines, WORD_FORMS.disciplines),
     createStat(counts.works, WORD_FORMS.works),
-    createStat(counts.courseProjects, WORD_FORMS.courseProjects)
+    createStat(counts.courseProjects, WORD_FORMS.courseProjects),
+    createStat(counts.practices, WORD_FORMS.practices)
   ];
 }
 
@@ -108,14 +130,57 @@ function getToggleLabel(isExpanded) {
   return isExpanded ? UI_TEXT.hideWorks : UI_TEXT.showWorks;
 }
 
+function canPreviewWork(work) {
+  return ["pdf", "html", "video", "image", "text"].includes(work.type);
+}
+
+function getWorkFile(work) {
+  return work.file || work.pdf || "";
+}
+
+function getWorkActionLabel(work) {
+  if (work.type === "link") {
+    return UI_TEXT.openLink;
+  }
+
+  if (work.type === "download") {
+    return UI_TEXT.downloadFile;
+  }
+
+  return UI_TEXT.openWork;
+}
+
 function getWorkButton(work) {
-  if (!work.pdf) {
-    return `<span class="work-link work-link--empty">${UI_TEXT.missingPdf}</span>`;
+  const file = getWorkFile(work);
+
+  if (!file) {
+    return `<span class="work-link work-link--empty">${UI_TEXT.missingFile}</span>`;
+  }
+
+  const url = toAssetUrl(file);
+  const sourceUrl = toAssetUrl(work.source || "");
+
+  if (canPreviewWork(work)) {
+    return `
+      <button
+        class="work-link"
+        type="button"
+        data-work-viewer
+        data-work-type="${escapeHtml(work.type)}"
+        data-work-title="${escapeHtml(work.title)}"
+        data-work-badge="${escapeHtml(work.badge)}"
+        data-work-file="${escapeHtml(url)}"
+        data-work-source="${escapeHtml(sourceUrl)}"
+        data-work-source-label="${escapeHtml(work.sourceLabel || UI_TEXT.downloadSource)}"
+      >
+        ${UI_TEXT.openWork}
+      </button>
+    `;
   }
 
   return `
-    <a class="work-link" href="${escapeHtml(work.pdf)}" target="_blank" rel="noopener noreferrer">
-      ${UI_TEXT.openPdf}
+    <a class="work-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+      ${getWorkActionLabel(work)}
     </a>
   `;
 }
@@ -154,9 +219,10 @@ function renderContact(contact) {
 function renderWork(work) {
   return `
     <li class="work-item">
-      <div>
+      <div class="work-item__text">
         <span class="work-badge">${escapeHtml(work.badge)}</span>
         <strong>${escapeHtml(work.title)}</strong>
+        ${renderOptionalParagraph("work-note", work.note)}
       </div>
       ${getWorkButton(work)}
     </li>
@@ -216,11 +282,16 @@ function getSemesterCounterLabel(semester) {
   const worksCount = countWorksInSemester(semester);
 
   if (worksCount > 0) {
-    return `${worksCount} PDF`;
+    return `${worksCount} ${pluralizeRu(worksCount, WORD_FORMS.works)}`;
   }
 
   const disciplinesCount = semester.disciplines.length;
   return `${disciplinesCount} ${pluralizeRu(disciplinesCount, WORD_FORMS.disciplines)}`;
+}
+
+function getSemesterTitle(semester) {
+  const number = String(semester.tag).match(/\d+/)?.[0] || "";
+  return number ? `Семестр ${number}` : semester.tag;
 }
 
 function renderSemester(semester, courseIndex, semesterIndex) {
@@ -228,9 +299,7 @@ function renderSemester(semester, courseIndex, semesterIndex) {
     <section class="semester-card">
       <div class="semester-card__head">
         <div>
-          <p class="semester-tag">${escapeHtml(semester.tag)}</p>
-          <h4 class="semester-card__title">${escapeHtml(semester.title)}</h4>
-          ${renderOptionalParagraph("semester-card__note", semester.note)}
+          <h4 class="semester-card__title">${escapeHtml(getSemesterTitle(semester))}</h4>
         </div>
         <span class="semester-card__counter">${getSemesterCounterLabel(semester)}</span>
       </div>
@@ -319,12 +388,12 @@ function renderProfileCopy(profile) {
 function getElements() {
   return {
     courseNav: document.querySelector("#course-nav"),
-    sidebarNote: document.querySelector("#sidebar-note"),
     heroMeta: document.querySelector("#hero-meta"),
     heroCopy: document.querySelector("#hero-copy"),
     archiveCard: document.querySelector("#archive-card"),
     portfolioRoot: document.querySelector("#portfolio-root"),
     courseProjectsRoot: document.querySelector("#course-projects-root"),
+    practiceReportsRoot: document.querySelector("#practice-reports-root"),
     contactsTitle: document.querySelector("#contacts-title"),
     contactsDescription: document.querySelector("#contacts-description"),
     contactsList: document.querySelector("#contacts-list")
@@ -367,6 +436,128 @@ function setupDisciplineToggles(root) {
   });
 }
 
+function createWorkViewer() {
+  const existingViewer = document.querySelector("#work-viewer");
+  if (existingViewer) {
+    return existingViewer;
+  }
+
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="viewer-modal" id="work-viewer" hidden>
+        <div class="viewer-modal__backdrop" data-viewer-close></div>
+        <section class="viewer-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="work-viewer-title">
+          <header class="viewer-modal__header">
+            <div>
+              <span class="work-badge" id="work-viewer-badge"></span>
+              <h2 id="work-viewer-title"></h2>
+            </div>
+            <button class="viewer-modal__close" type="button" data-viewer-close aria-label="${UI_TEXT.closeViewer}">
+              ×
+            </button>
+          </header>
+          <div class="viewer-modal__body" id="work-viewer-body"></div>
+          <footer class="viewer-modal__footer">
+            <a class="work-link" id="work-viewer-standalone" target="_blank" rel="noopener noreferrer">
+              ${UI_TEXT.openStandalone}
+            </a>
+            <a class="work-link work-link--ghost" id="work-viewer-source" target="_blank" rel="noopener noreferrer" download>
+              ${UI_TEXT.downloadSource}
+            </a>
+          </footer>
+        </section>
+      </div>
+    `
+  );
+
+  return document.querySelector("#work-viewer");
+}
+
+function getViewerElements() {
+  const viewer = createWorkViewer();
+
+  return {
+    viewer,
+    title: viewer.querySelector("#work-viewer-title"),
+    badge: viewer.querySelector("#work-viewer-badge"),
+    body: viewer.querySelector("#work-viewer-body"),
+    standalone: viewer.querySelector("#work-viewer-standalone"),
+    source: viewer.querySelector("#work-viewer-source"),
+    closeButton: viewer.querySelector(".viewer-modal__close")
+  };
+}
+
+function renderViewerBody(type, url, title) {
+  const safeUrl = escapeHtml(url);
+  const safeTitle = escapeHtml(title);
+
+  if (type === "video") {
+    return `<video class="viewer-modal__video" src="${safeUrl}" controls></video>`;
+  }
+
+  if (type === "image") {
+    return `<img class="viewer-modal__image" src="${safeUrl}" alt="${safeTitle}">`;
+  }
+
+  if (["pdf", "html", "text"].includes(type)) {
+    return `<iframe class="viewer-modal__frame" src="${safeUrl}" title="${safeTitle}"></iframe>`;
+  }
+
+  return `<p class="viewer-modal__message">${UI_TEXT.unsupportedPreview}</p>`;
+}
+
+function openWorkViewer(trigger) {
+  const elements = getViewerElements();
+  const type = trigger.dataset.workType || "pdf";
+  const title = trigger.dataset.workTitle || "";
+  const badge = trigger.dataset.workBadge || "";
+  const file = trigger.dataset.workFile || "";
+  const source = trigger.dataset.workSource || "";
+  const sourceLabel = trigger.dataset.workSourceLabel || UI_TEXT.downloadSource;
+
+  elements.title.textContent = title;
+  elements.badge.textContent = badge;
+  elements.body.innerHTML = renderViewerBody(type, file, title);
+  elements.standalone.href = file;
+  elements.source.href = source;
+  elements.source.textContent = sourceLabel;
+  elements.source.hidden = !source;
+  elements.viewer.hidden = false;
+  document.body.classList.add("is-viewer-open");
+  elements.closeButton.focus();
+}
+
+function closeWorkViewer() {
+  const elements = getViewerElements();
+
+  elements.viewer.hidden = true;
+  elements.body.innerHTML = "";
+  document.body.classList.remove("is-viewer-open");
+}
+
+function setupWorkViewer() {
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-work-viewer]");
+    if (trigger) {
+      openWorkViewer(trigger);
+      return;
+    }
+
+    const closeButton = event.target.closest("[data-viewer-close]");
+    if (closeButton) {
+      closeWorkViewer();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    const viewer = document.querySelector("#work-viewer");
+    if (event.key === "Escape" && viewer && !viewer.hidden) {
+      closeWorkViewer();
+    }
+  });
+}
+
 function initPortfolio() {
   const data = window.portfolioData;
 
@@ -378,17 +569,18 @@ function initPortfolio() {
 
   document.title = data.pageTitle || document.title;
   elements.courseNav.innerHTML = renderNav(data.courses);
-  elements.sidebarNote.innerHTML = `<p>${escapeHtml(data.sidebarNote)}</p>`;
   elements.heroMeta.innerHTML = renderProfileMeta(data.profile);
   elements.heroCopy.innerHTML = renderProfileCopy(data.profile);
   elements.archiveCard.innerHTML = renderArchiveCard(data);
   elements.portfolioRoot.innerHTML = renderList(data.courses, renderCourse);
   elements.courseProjectsRoot.innerHTML = renderList(data.courseProjects, renderCourseProject);
+  elements.practiceReportsRoot.innerHTML = renderList(data.practiceReports, renderCourseProject);
   elements.contactsTitle.textContent = data.contacts.title;
   elements.contactsDescription.textContent = data.contacts.description;
   elements.contactsList.innerHTML = renderContacts(data.contacts.items);
 
   setupDisciplineToggles(elements.portfolioRoot);
+  setupWorkViewer();
 }
 
 window.addEventListener("DOMContentLoaded", initPortfolio);

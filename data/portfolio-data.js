@@ -40,33 +40,82 @@ const CONTACTS = {
 const COURSE_PROJECTS = [
   {
     badge: "Курсовая I",
-    period: "2 курс",
-    title: "Информационная система учета учебных материалов",
+    period: "1 курс",
+    title: "Использование симулятора электрических цепей для проведения физического эксперимента",
     description:
-      "Проект о структуре хранения дисциплин, работ, файлов и связей между разделами учебного архива.",
+      "Работа о том, как цифровой симулятор электрических цепей помогает проводить и анализировать физический эксперимент.",
     focus:
-      "Акцент на моделировании предметной области, проектировании таблиц и логике навигации по материалам.",
-    pdf: ""
+      "В центре внимания — сборка электрических схем, наблюдение параметров цепи и оформление экспериментальных результатов.",
+    type: "pdf",
+    file: "works/course-projects/Курсовая работа. 'ИСПОЛЬЗОВАНИЕ СИМУЛЯТОРА ЭЛЕКТРИЧЕСКИХ ЦЕПЕЙ ДЛЯ ПРОВЕДЕНИЯ ФИЗИЧЕСКОГО ЭКСПЕРИМЕНТА' Салимов Д.Р. 2 группа, 2 подгруппа.pdf",
+    source: "data/course-projects/Курсовая работа. 'ИСПОЛЬЗОВАНИЕ СИМУЛЯТОРА ЭЛЕКТРИЧЕСКИХ ЦЕПЕЙ ДЛЯ ПРОВЕДЕНИЯ ФИЗИЧЕСКОГО ЭКСПЕРИМЕНТА' Салимов Д.Р. 2 группа, 2 подгруппа.docx",
+    sourceLabel: "Исходный DOCX"
   },
   {
     badge: "Курсовая II",
-    period: "3 курс",
-    title: "Веб-платформа для организации цифрового портфолио",
+    period: "2 курс",
+    title: "Моделирование фракталов",
     description:
-      "Работа, объединяющая интерфейсную логику, адаптивную подачу контента и проектирование пользовательского маршрута.",
+      "Исследование фрактальных структур: самоподобия, дробной размерности, классификации фракталов и методов их построения.",
     focus:
-      "Основное внимание уделено структуре интерфейса, пользовательским сценариям и визуальной иерархии разделов.",
-    pdf: ""
+      "Практическая часть посвящена инструментам моделирования и реализации фрактальных моделей средствами Python.",
+    type: "pdf",
+    file: "works/course-projects/Курсовая работа. Моделирование Фракталов. Салимов Д.Р. .pdf",
+    source: "data/course-projects/Курсовая работа. Моделирование Фракталов. Салимов Д.Р. .docx",
+    sourceLabel: "Исходный DOCX"
   },
   {
     badge: "Курсовая III",
-    period: "4 курс",
-    title: "Модульная система сопровождения проектной документации",
+    period: "3 курс",
+    title: "Регрессионный анализ",
     description:
-      "Финальный проектный этап, где соединяются архитектурное мышление, документация и организация крупных материалов.",
+      "Курсовая работа по статистическому анализу данных и построению регрессионных зависимостей.",
     focus:
-      "В центре внимания находятся декомпозиция системы, ответственность модулей и устойчивость проектной структуры.",
-    pdf: ""
+      "Акцент сделан на подготовке данных, выборе модели, интерпретации коэффициентов и оценке качества полученных результатов.",
+    type: "pdf",
+    file: "data/course-projects/Курсовая работа. 'Ргрессионный анализ' Салимов Д.Р. 2.2. ИВТ 3 курс.pdf"
+  }
+];
+
+const PRACTICE_REPORTS = [
+  {
+    badge: "Практика I",
+    period: "2 курс",
+    title: "Учебная практика",
+    description:
+      "Отчет по учебной технологической практике по направлению «Информатика и вычислительная техника».",
+    focus:
+      "Материалы фиксируют индивидуальное задание, этапы выполнения практики и итоговые результаты работы.",
+    type: "pdf",
+    file: "works/practice/Отчет практика Салимов Д.Р. 2023.pdf",
+    source: "data/practice/Отчет практика Салимов Д.Р. 2023.docx",
+    sourceLabel: "Исходный DOCX"
+  },
+  {
+    badge: "Практика II",
+    period: "3 курс",
+    title: "Производственная практика",
+    description:
+      "Отчет о прохождении производственной технологической практики на 3 курсе.",
+    focus:
+      "В работе собраны сведения о задачах практики, выполненных действиях и полученных профессиональных результатах.",
+    type: "pdf",
+    file: "works/practice/Отчет_3курс.Салимов Д.Р.pdf",
+    source: "data/practice/Отчет_3курс.Салимов Д.Р.docx",
+    sourceLabel: "Исходный DOCX"
+  },
+  {
+    badge: "Практика III",
+    period: "4 курс",
+    title: "Производственная преддипломная практика",
+    description:
+      "Отчет по преддипломной производственной практике на завершающем этапе бакалавриата.",
+    focus:
+      "Акцент сделан на подготовке к выпускной квалификационной работе и систематизации практических материалов.",
+    type: "pdf",
+    file: "works/practice/Салимов Д.Р. Отчет по практике 4.pdf",
+    source: "data/practice/Салимов Д.Р. Отчет по практике 4.docx",
+    sourceLabel: "Исходный DOCX"
   }
 ];
 
@@ -212,65 +261,114 @@ const COURSE_DEFINITIONS = [
   }
 ];
 
+const WORKS_BY_DISCIPLINE = window.portfolioWorks || {};
+const EXTRA_DISCIPLINES_BY_SCOPE = window.portfolioExtraDisciplines || {};
+const WORK_COLLATOR = new Intl.Collator("ru", {
+  numeric: true,
+  sensitivity: "base"
+});
+
 function normalizeWork(work) {
   if (typeof work === "string") {
     return {
       badge: "PDF",
       title: work,
-      pdf: ""
+      type: "pdf",
+      file: "",
+      pdf: "",
+      source: "",
+      sourceLabel: ""
     };
   }
+
+  const file = work.file || work.pdf || "";
+  const type = work.type || "pdf";
 
   return {
     badge: work.badge || "PDF",
     title: work.title,
-    pdf: work.pdf || ""
+    type,
+    file,
+    pdf: work.pdf || (type === "pdf" ? file : ""),
+    source: work.source || "",
+    sourceLabel: work.sourceLabel || "",
+    note: work.note || ""
   };
 }
 
-function createDiscipline(discipline, open = false) {
+function getAttachedWorks(context, disciplineName) {
+  const courseWorks = WORKS_BY_DISCIPLINE[context.courseId] || {};
+  const semesterWorks = courseWorks[context.semesterTag] || {};
+  const works = semesterWorks[disciplineName] || WORKS_BY_DISCIPLINE[disciplineName];
+  return Array.isArray(works) ? works : [];
+}
+
+function getExtraDisciplines(context) {
+  const courseDisciplines = EXTRA_DISCIPLINES_BY_SCOPE[context.courseId] || {};
+  const semesterDisciplines = courseDisciplines[context.semesterTag] || [];
+  return Array.isArray(semesterDisciplines) ? semesterDisciplines : [];
+}
+
+function createWorks(context, disciplineName, works = []) {
+  return [...works, ...getAttachedWorks(context, disciplineName)]
+    .map(normalizeWork)
+    .sort((left, right) => WORK_COLLATOR.compare(left.title, right.title));
+}
+
+function createDiscipline(discipline, context, open = false) {
   if (typeof discipline === "string") {
     return {
       name: discipline,
       open,
-      works: []
+      works: createWorks(context, discipline)
     };
   }
 
   return {
     name: discipline.name,
     open: discipline.open ?? open,
-    works: (discipline.works || []).map(normalizeWork)
+    works: createWorks(context, discipline.name, discipline.works)
   };
 }
 
-function createSemester(definition) {
+function createSemester(definition, courseId) {
+  const context = {
+    courseId,
+    semesterTag: definition.tag
+  };
+  const disciplines = [
+    ...definition.disciplines,
+    ...getExtraDisciplines(context)
+  ];
+
   return {
     tag: definition.tag,
     title: definition.title,
     note: definition.note || "",
-    disciplines: definition.disciplines.map((discipline, index) =>
-      createDiscipline(discipline, index === 0)
+    disciplines: disciplines.map((discipline, index) =>
+      createDiscipline(discipline, context, index === 0)
     )
   };
 }
 
 function createCourse(definition, index) {
+  const id = `course-${index + 1}`;
+
   return {
-    id: `course-${index + 1}`,
+    id,
     number: String(index + 1).padStart(2, "0"),
     title: definition.title,
     summary: definition.summary,
-    semesters: definition.semesters.map(createSemester)
+    semesters: definition.semesters.map((semester) => createSemester(semester, id))
   };
 }
 
 window.portfolioData = {
   pageTitle: PAGE_TITLE,
-  sidebarNote: "Восемь семестров, четыре курса и единый каталог дисциплин, работ и курсовых проектов.",
   profile: PROFILE,
   archive: ARCHIVE,
   contacts: CONTACTS,
   courseProjects: COURSE_PROJECTS,
+  practiceReports: PRACTICE_REPORTS,
   courses: COURSE_DEFINITIONS.map(createCourse)
 };

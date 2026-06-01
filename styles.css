@@ -599,6 +599,10 @@ h4 {
   background: var(--panel-strong);
 }
 
+.work-item__text {
+  min-width: 0;
+}
+
 .work-item + .work-item {
   margin-top: 0.8rem;
 }
@@ -606,6 +610,13 @@ h4 {
 .work-item strong {
   display: block;
   font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.work-note {
+  margin-top: 0.45rem;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .work-badge {
@@ -630,6 +641,9 @@ h4 {
   border: 2px solid var(--line);
   border-radius: 999px;
   background: #fff3e6;
+  color: var(--line);
+  cursor: pointer;
+  font: inherit;
   font-size: 0.92rem;
   text-align: center;
   transition: transform 180ms ease, background-color 180ms ease;
@@ -644,6 +658,124 @@ h4 {
 .work-link--empty {
   background: #efe4d8;
   color: var(--muted);
+  cursor: default;
+}
+
+.work-link--ghost {
+  background: #fffbf4;
+}
+
+body.is-viewer-open {
+  overflow: hidden;
+}
+
+.viewer-modal[hidden] {
+  display: none;
+}
+
+.viewer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+
+.viewer-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 28, 25, 0.62);
+  backdrop-filter: blur(5px);
+}
+
+.viewer-modal__dialog {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(1120px, 100%);
+  height: min(86vh, 900px);
+  border: 3px solid var(--line);
+  border-radius: 28px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.viewer-modal__header,
+.viewer-modal__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+}
+
+.viewer-modal__header {
+  border-bottom: 2px solid rgba(31, 28, 25, 0.16);
+}
+
+.viewer-modal__header h2 {
+  font-family: "Georgia", "Palatino Linotype", serif;
+  font-size: clamp(1.35rem, 2.4vw, 2.2rem);
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.viewer-modal__close {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #fff3e6;
+  color: var(--line);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.viewer-modal__body {
+  min-height: 0;
+  padding: 1rem;
+  background: #f4eadf;
+}
+
+.viewer-modal__frame,
+.viewer-modal__video,
+.viewer-modal__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(31, 28, 25, 0.18);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.viewer-modal__video {
+  object-fit: contain;
+  background: #15120f;
+}
+
+.viewer-modal__image {
+  object-fit: contain;
+  padding: 0.8rem;
+}
+
+.viewer-modal__message {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.viewer-modal__footer {
+  justify-content: flex-end;
+  border-top: 2px solid rgba(31, 28, 25, 0.16);
 }
 
 .contacts-card {
@@ -744,6 +876,31 @@ h4 {
   .work-link {
     min-width: 0;
     width: 100%;
+  }
+
+  .viewer-modal {
+    padding: 0.55rem;
+  }
+
+  .viewer-modal__dialog {
+    height: calc(100vh - 1.1rem);
+    border-radius: 20px;
+  }
+
+  .viewer-modal__header,
+  .viewer-modal__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .viewer-modal__close {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
+  }
+
+  .viewer-modal__header h2 {
+    padding-right: 3rem;
   }
 
   .discipline-toggle {
