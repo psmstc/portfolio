@@ -340,14 +340,24 @@ function createSemester(definition, courseId) {
     ...definition.disciplines,
     ...getExtraDisciplines(context)
   ];
+  const preparedDisciplines = disciplines.map((discipline) =>
+    createDiscipline(discipline, context)
+  );
+  const hasOpenDiscipline = preparedDisciplines.some((discipline) => discipline.open);
+  const firstWithWorksIndex = preparedDisciplines.findIndex(
+    (discipline) => discipline.works.length > 0
+  );
+  const openIndex = firstWithWorksIndex === -1 ? 0 : firstWithWorksIndex;
+
+  if (!hasOpenDiscipline && preparedDisciplines[openIndex]) {
+    preparedDisciplines[openIndex].open = true;
+  }
 
   return {
     tag: definition.tag,
     title: definition.title,
     note: definition.note || "",
-    disciplines: disciplines.map((discipline, index) =>
-      createDiscipline(discipline, context, index === 0)
-    )
+    disciplines: preparedDisciplines
   };
 }
 
